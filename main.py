@@ -1,12 +1,9 @@
 # main.py
-# Peran: Titik masuk utama aplikasi.
-# Bertanggung jawab untuk membuat jendela utama dan mengorkestrasi
-# pembuatan komponen dari modul-modul lain.
+# VERSI BARU - Dibuat ulang dari awal untuk stabilitas
 
 import tkinter as tk
 from tkinter import ttk
 
-# Mengimpor kelas-kelas dari modul yang telah kita buat
 from features.canvas_feature import CanvasFeature
 from features.ui_manager import UIManager
 from tools.file_handler import FileHandler
@@ -14,36 +11,36 @@ from tools.file_handler import FileHandler
 
 def main():
     """Fungsi utama untuk menginisialisasi dan menjalankan aplikasi."""
-    # 1. Inisialisasi jendela utama
     root = tk.Tk()
-    root.title("Paint Terstruktur - MADE BY ADE7")
-    # -- DIUBAH: Ukuran jendela diperbesar --
+    root.title("Paint Terstruktur v6.0 - Stabilitas Baru")
     root.geometry("1200x800")
 
-    # Menggunakan style yang lebih modern jika tersedia
     style = ttk.Style()
     try:
         style.theme_use('clam')
     except tk.TclError:
-        pass  # Gunakan tema default jika 'clam' tidak ada
+        pass
 
-    # 2. Inisialisasi komponen inti
-    # Frame utama untuk kanvas, ditempatkan terlebih dahulu
     canvas_frame = tk.Frame(
         root, highlightbackground="gray", highlightthickness=1)
     canvas_frame.pack(pady=10, padx=10, fill=tk.BOTH, expand=True)
 
-    # Inisiasi setiap modul/fitur
-    # Kanvas dimasukkan ke dalam frame-nya
+    # Inisiasi setiap modul
     canvas_feature = CanvasFeature(canvas_frame)
     file_handler = FileHandler()
-
-    # 3. Inisialisasi UI Manager yang akan membangun semua tombol dan kontrol
-    # UI Manager memerlukan akses ke root, kanvas, dan file_handler untuk menghubungkan tombol
     ui_manager = UIManager(root, canvas_feature, file_handler)
-    ui_manager.setup_ui()  # Membangun antarmuka pengguna
 
-    # 4. Menjalankan aplikasi
+    # Membangun antarmuka pengguna
+    ui_manager.setup_ui()
+
+    # Menghubungkan semua tombol UI ke logika di kanvas untuk manajemen state
+    canvas_feature.link_ui_elements(
+        pen_button=ui_manager.pen_button,
+        eraser_button=ui_manager.eraser_button,
+        bucket_button=ui_manager.bucket_button,
+        shape_buttons=ui_manager.shape_buttons
+    )
+
     root.mainloop()
 
 
